@@ -1,0 +1,41 @@
+{
+  "tituloAba": "Aula grátis: o preço certo do seu doce",
+  "link": "https://wa.me/5500000000000?text=Quero%20a%20aula%20do%20pre%C3%A7o",
+  "fonte": "Sora",
+  "forma": "cristal",
+  "cores": {
+    "fundo": "#140b10",
+    "destaque": "#e0567f",
+    "destaque2": "#f2b880",
+    "texto": "#fbf3f5"
+  },
+  "topo": {
+    "pretitulo": "Aula grátis para confeiteiras",
+    "titulo": "Descubra quanto cobrar pelo bolo e ver sobrar no fim do mês",
+    "subtitulo": "Uma aula de 40 minutos em que você monta o preço do produto que mais vende, com a planilha aberta do lado.",
+    "botao": "Quero a aula grátis"
+  },
+  "cenas": [
+    { "titulo": "Sexta à noite, a encomenda entregue", "texto": "A cliente adorou, você trabalhou o dia inteiro. Aí você abre o caderno e a conta não fecha." },
+    { "titulo": "O que ficou fora da conta", "texto": "O pote, a tampa, a etiqueta, o gás e as suas horas na cozinha. Quase ninguém coloca tudo." },
+    { "titulo": "A virada", "texto": "Com tudo na planilha, o preço deixa de ser chute. Você sabe quanto cada bolo deixa no seu bolso." },
+    { "titulo": "Depois da aula", "texto": "Você responde \"quanto custa?\" sem medo e sem pedir desculpa pelo preço." }
+  ],
+  "tituloBeneficios": "O que você leva da aula",
+  "beneficios": [
+    { "titulo": "O preço do seu produto principal", "texto": "Montado durante a aula, com os seus números." },
+    { "titulo": "A planilha pronta", "texto": "Para repetir a conta em todos os outros doces do cardápio." },
+    { "titulo": "A frase para avisar o preço novo", "texto": "Para mandar às clientes sem perder nenhuma." }
+  ],
+  "perguntas": [
+    { "pergunta": "Preciso saber Excel?", "resposta": "Não. A planilha já vem com as fórmulas. Você só preenche os números." },
+    { "pergunta": "Funciona para salgado também?", "resposta": "Sim. A conta é a mesma para qualquer produto feito em casa." },
+    { "pergunta": "A aula fica gravada?", "resposta": "[CONFIRMAR SE FICA GRAVADA E POR QUANTO TEMPO]" }
+  ],
+  "fim": {
+    "titulo": "Monte o preço certo do seu bolo nesta semana",
+    "botao": "Quero a aula grátis",
+    "urgencia": "A aula ao vivo é no dia [DATA REAL]."
+  },
+  "rodape": "Exemplo fictício feito com a skill pagina-de-captura-3d."
+}

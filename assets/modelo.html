@@ -1,0 +1,232 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>__TITULO__</title>
+<meta name="description" content="__DESCRICAO__">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=__FONTE_URL__:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --fundo: #0b0d12;
+    --destaque: #7c5cff;
+    --destaque2: #20c4a0;
+    --texto: #f3f4f7;
+    --suave: rgba(243, 244, 247, .72);
+    --cartao: rgba(11, 13, 18, .72);
+    --fonte: 'Inter', system-ui, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { margin: 0; background: var(--fundo); color: var(--texto); font-family: var(--fonte); -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+  #cena { position: fixed; inset: 0; width: 100vw; height: 100vh; display: block; z-index: 0; }
+  .sem-webgl #cena { display: none; }
+  .sem-webgl body, body.sem-webgl { background: radial-gradient(120% 80% at 50% 0%, color-mix(in srgb, var(--destaque) 45%, var(--fundo)) 0%, var(--fundo) 60%); }
+  main { position: relative; z-index: 1; }
+  section { min-height: 100vh; display: flex; flex-direction: column; justify-content: flex-end; padding: 0 16px 9vh; }
+  .largura { width: 100%; max-width: 620px; margin: 0 auto; }
+  .cartao { background: var(--cartao); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,.08); border-radius: 20px; padding: 24px 22px; }
+  .topo { justify-content: flex-end; padding-bottom: 7vh; }
+  .topo .largura { background: linear-gradient(to top, var(--fundo) 30%, transparent); padding-top: 40px; }
+  .pretitulo { text-transform: uppercase; letter-spacing: .14em; font-size: 12px; font-weight: 600; color: var(--destaque2); margin: 0 0 12px; }
+  h1 { font-size: clamp(30px, 8vw, 52px); line-height: 1.05; margin: 0 0 16px; font-weight: 800; letter-spacing: -.02em; }
+  h2 { font-size: clamp(24px, 6vw, 36px); line-height: 1.12; margin: 0 0 12px; font-weight: 800; letter-spacing: -.01em; }
+  h3 { font-size: 18px; margin: 0 0 6px; }
+  p { font-size: 17px; line-height: 1.55; color: var(--suave); margin: 0 0 12px; }
+  .botao { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 54px; padding: 0 26px; margin-top: 10px; border-radius: 999px; background: var(--destaque); color: #fff; font-weight: 800; font-size: 17px; text-decoration: none; box-shadow: 0 10px 30px color-mix(in srgb, var(--destaque) 45%, transparent); transition: transform .15s ease; }
+  .botao:hover { transform: translateY(-2px); }
+  .botao:focus-visible { outline: 3px solid var(--destaque2); outline-offset: 3px; }
+  .numero { font-size: 13px; font-weight: 800; color: var(--destaque2); margin-bottom: 8px; letter-spacing: .1em; }
+  .lista { display: grid; gap: 14px; }
+  .item { padding: 18px; border-radius: 16px; background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.07); }
+  .item p { margin: 0; font-size: 16px; }
+  details { border-bottom: 1px solid rgba(255,255,255,.1); padding: 14px 0; }
+  details:last-child { border-bottom: 0; }
+  summary { cursor: pointer; font-weight: 600; font-size: 17px; list-style: none; display: flex; justify-content: space-between; gap: 12px; }
+  summary::after { content: '+'; color: var(--destaque2); font-weight: 800; }
+  details[open] summary::after { content: '−'; }
+  details p { margin: 10px 0 0; font-size: 16px; }
+  .topo h1, .topo p { text-shadow: 0 2px 22px var(--fundo), 0 0 2px var(--fundo); }
+  .fim { text-align: center; }
+  .fim .botao { width: 100%; max-width: 380px; }
+  .urgencia { font-size: 15px; margin-top: 14px; }
+  footer { position: relative; z-index: 1; text-align: center; padding: 24px 16px 40px; font-size: 13px; color: rgba(243,244,247,.5); }
+  .revelar { opacity: 0; transform: translateY(28px); transition: opacity .8s ease, transform .8s ease; }
+  .revelar.visivel { opacity: 1; transform: none; }
+  @media (min-width: 900px) {
+    section { justify-content: center; padding-bottom: 0; }
+    .largura { margin: 0 8vw 0 auto; max-width: 520px; }
+    .topo .largura { background: none; }
+    .fim .largura { margin: 0 auto; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    .revelar { opacity: 1; transform: none; transition: none; }
+  }
+</style>
+</head>
+<body>
+<canvas id="cena" aria-hidden="true"></canvas>
+<main id="conteudo"></main>
+<footer id="rodape"></footer>
+
+<script>
+/*CONFIG-INICIO*/
+const PAGINA = {};
+/*CONFIG-FIM*/
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+(function () {
+  const P = PAGINA;
+  const raiz = document.documentElement.style;
+  const cores = P.cores || {};
+  if (cores.fundo) raiz.setProperty('--fundo', cores.fundo);
+  if (cores.destaque) raiz.setProperty('--destaque', cores.destaque);
+  if (cores.destaque2) raiz.setProperty('--destaque2', cores.destaque2);
+  if (cores.texto) raiz.setProperty('--texto', cores.texto);
+  if (P.fonte) raiz.setProperty('--fonte', "'" + P.fonte + "', system-ui, sans-serif");
+
+  // Monta o conteúdo com textContent: nada do texto vira HTML.
+  function el(tag, cls, texto) {
+    const e = document.createElement(tag);
+    if (cls) e.className = cls;
+    if (texto) e.textContent = texto;
+    return e;
+  }
+  function botao(texto) {
+    const a = el('a', 'botao', texto);
+    a.href = P.link;
+    a.target = '_blank';
+    a.rel = 'noopener';
+    return a;
+  }
+  function secao(cls, filhos, comCartao) {
+    const s = el('section', cls);
+    const w = el('div', 'largura revelar' + (comCartao ? ' cartao' : ''));
+    filhos.forEach(function (f) { if (f) w.appendChild(f); });
+    s.appendChild(w);
+    return s;
+  }
+  const main = document.getElementById('conteudo');
+  const t = P.topo || {};
+  main.appendChild(secao('topo', [
+    t.pretitulo ? el('p', 'pretitulo', t.pretitulo) : null,
+    el('h1', '', t.titulo),
+    el('p', '', t.subtitulo),
+    botao(t.botao),
+  ]));
+  (P.cenas || []).forEach(function (c, i) {
+    main.appendChild(secao('cena', [el('div', 'numero', String(i + 1).padStart(2, '0')), el('h2', '', c.titulo), el('p', '', c.texto)], true));
+  });
+  if ((P.beneficios || []).length) {
+    const lista = el('div', 'lista');
+    P.beneficios.forEach(function (b) { const it = el('div', 'item'); it.appendChild(el('h3', '', b.titulo)); it.appendChild(el('p', '', b.texto)); lista.appendChild(it); });
+    main.appendChild(secao('beneficios', [el('h2', '', P.tituloBeneficios || 'O que você leva'), lista], true));
+  }
+  if ((P.perguntas || []).length) {
+    const box = el('div', '');
+    P.perguntas.forEach(function (q) { const d = el('details', ''); d.appendChild(el('summary', '', q.pergunta)); d.appendChild(el('p', '', q.resposta)); box.appendChild(d); });
+    main.appendChild(secao('perguntas', [el('h2', '', 'Perguntas frequentes'), box], true));
+  }
+  const f = P.fim || {};
+  main.appendChild(secao('fim', [el('h2', '', f.titulo), botao(f.botao), f.urgencia ? el('p', 'urgencia', f.urgencia) : null], true));
+  document.getElementById('rodape').textContent = P.rodape || '';
+
+  const io = 'IntersectionObserver' in window ? new IntersectionObserver(function (es) {
+    es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('visivel'); io.unobserve(e.target); } });
+  }, { threshold: 0.15 }) : null;
+  document.querySelectorAll('.revelar').forEach(function (n) { io ? io.observe(n) : n.classList.add('visivel'); });
+
+  // ---------- Cena 3D ----------
+  const canvas = document.getElementById('cena');
+  let ok = !!window.THREE;
+  let renderer;
+  if (ok) { try { renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true }); } catch (e) { ok = false; } }
+  if (!ok) { document.body.classList.add('sem-webgl'); return; }
+
+  const calmo = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 100);
+  const css = getComputedStyle(document.documentElement);
+  const cor1 = new THREE.Color(css.getPropertyValue('--destaque').trim() || '#7c5cff');
+  const cor2 = new THREE.Color(css.getPropertyValue('--destaque2').trim() || '#20c4a0');
+  scene.fog = new THREE.Fog(new THREE.Color(css.getPropertyValue('--fundo').trim() || '#0b0d12'), 6, 16);
+
+  scene.add(new THREE.AmbientLight(0xffffff, 0.45));
+  const luz = new THREE.DirectionalLight(0xffffff, 0.9); luz.position.set(3, 4, 5); scene.add(luz);
+  const luz2 = new THREE.PointLight(cor2, 1.2, 20); luz2.position.set(-4, -2, 3); scene.add(luz2);
+
+  const forma = P.forma || 'cristal';
+  let geo;
+  if (forma === 'anel') geo = new THREE.TorusKnotGeometry(1, 0.32, 160, 18);
+  else if (forma === 'ondas') geo = new THREE.PlaneGeometry(9, 9, 70, 70);
+  else geo = new THREE.IcosahedronGeometry(1.35, 1);
+  const mat = new THREE.MeshStandardMaterial({ color: cor1, roughness: 0.35, metalness: 0.25, flatShading: forma !== 'anel', side: THREE.DoubleSide });
+  const malha = new THREE.Mesh(geo, mat);
+  const arame = new THREE.Mesh(geo, new THREE.MeshBasicMaterial({ color: cor2, wireframe: true, transparent: true, opacity: 0.18 }));
+  const grupo = new THREE.Group(); grupo.add(malha); grupo.add(arame); scene.add(grupo);
+  if (forma === 'ondas') { grupo.rotation.x = -1.25; mat.transparent = true; mat.opacity = 0.55; }
+  const base = forma === 'ondas' ? geo.attributes.position.array.slice() : null;
+
+  // Partículas leves ao fundo.
+  const n = 380, pos = new Float32Array(n * 3);
+  for (let i = 0; i < n; i++) { pos[i * 3] = (Math.random() - 0.5) * 18; pos[i * 3 + 1] = (Math.random() - 0.5) * 18; pos[i * 3 + 2] = (Math.random() - 0.5) * 10 - 3; }
+  const pg = new THREE.BufferGeometry(); pg.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+  const pontos = new THREE.Points(pg, new THREE.PointsMaterial({ color: cor2, size: 0.035, transparent: true, opacity: 0.7 }));
+  scene.add(pontos);
+
+  function tamanho() {
+    const w = window.innerWidth, h = window.innerHeight;
+    renderer.setSize(w, h, false);
+    camera.aspect = w / h; camera.updateProjectionMatrix();
+  }
+  window.addEventListener('resize', tamanho); tamanho();
+
+  let alvo = 0, prog = 0;
+  function rolagem() { const max = document.documentElement.scrollHeight - window.innerHeight; alvo = max > 0 ? window.scrollY / max : 0; }
+  window.addEventListener('scroll', rolagem, { passive: true }); rolagem();
+
+  const corAtual = new THREE.Color();
+  let ultimo = performance.now(), tempo = 0;
+  function quadro(agora) {
+    const dt = Math.min((agora - ultimo) / 1000, 0.05); ultimo = agora;
+    tempo += calmo ? dt * 0.2 : dt;
+    prog += (alvo - prog) * 0.08;
+    const largo = window.innerWidth >= 900;
+    const dist = 6.2 - prog * 1.8;
+    const meiaAltura = Math.tan(camera.fov * Math.PI / 360) * dist;
+    const meiaLargura = meiaAltura * camera.aspect;
+    // No celular o 3D fica na metade de cima; no computador, na metade esquerda, do tamanho que couber.
+    let x = 0, y = 1.1 - prog * 0.4, encaixe = Math.min(1, (meiaLargura * 0.85) / 1.6);
+    if (largo) { x = -meiaLargura * 0.5; y = 0; encaixe = Math.min(1, (meiaLargura * 0.34) / 1.4); }
+    // As ondas são um chão que passa por baixo do texto, não um objeto ao lado.
+    if (forma === 'ondas') { x = 0; y = -2.2 + prog * 0.6; }
+    grupo.position.set(x, y, forma === 'ondas' ? -1.5 : 0);
+    grupo.rotation.y = tempo * 0.25 + prog * Math.PI * 2.2;
+    if (forma !== 'ondas') grupo.rotation.x = Math.sin(tempo * 0.3) * 0.25 + prog * Math.PI * 0.8;
+    const esc = (1 + Math.sin(prog * Math.PI) * 0.25) * encaixe;
+    grupo.scale.setScalar(forma === 'ondas' ? 1 : esc);
+    camera.position.set(0, 0, dist);
+    camera.lookAt(0, largo ? 0 : 0.6, 0);
+    corAtual.copy(cor1).lerp(cor2, prog); mat.color.copy(corAtual);
+    if (base) {
+      const a = geo.attributes.position.array;
+      for (let i = 0; i < a.length; i += 3) {
+        const bx = base[i], by = base[i + 1];
+        a[i + 2] = Math.sin(bx * 0.9 + tempo * 1.2) * 0.25 + Math.cos(by * 0.8 + tempo) * 0.25 + Math.sin((bx + by) * 0.5 + prog * 8) * prog * 0.5;
+      }
+      geo.attributes.position.needsUpdate = true; geo.computeVertexNormals();
+    }
+    pontos.rotation.y = tempo * 0.02 + prog * 0.6;
+    renderer.render(scene, camera);
+    requestAnimationFrame(quadro);
+  }
+  requestAnimationFrame(quadro);
+})();
+</script>
+</body>
+</html>
